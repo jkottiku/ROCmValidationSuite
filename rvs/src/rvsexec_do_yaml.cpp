@@ -102,7 +102,7 @@ int rvs::exec::do_yaml(const std::string& config_file) {
       return -1;
     }
 
-    // create action excutor in .so
+    // create action executor in .so
     rvs::action* pa = module::action_create(rvsmodule.c_str());
     if (!pa) {
       char buff[1024];

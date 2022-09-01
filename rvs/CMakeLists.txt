@@ -1,6 +1,6 @@
 ################################################################################
 ##
-## Copyright (c) 2018-2022 2018 ROCm Developer Tools
+## Copyright (c) 2018-2022 ROCm Developer Tools
 ##
 ## MIT LICENSE:
 ## Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -139,6 +139,7 @@ set(SOURCES
   src/rvsexec.cpp
   src/rvsexec_do_yaml.cpp
   src/rvsoptions.cpp
+  src/rvs_interface.cpp
 )
 
 ## define helper lib

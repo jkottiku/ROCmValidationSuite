@@ -1,6 +1,6 @@
 /********************************************************************************
  *
- * Copyright (c) 2018-2022 OCm Developer Tools
+ * Copyright (c) 2018-2022 ROCm Developer Tools
  *
  * MIT LICENSE:
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -47,6 +47,18 @@ bool  rvs::options::has_option(const std::string& Option, std::string* pval) {
   return true;
 }
 
+bool rvs::options::has_option(std::map<std::string,
+    std::string>& opt, const std::string& Option,
+    std::string* pval) {
+
+  auto it = opt.find(std::string(Option));
+  if (it == opt.end())
+    return false;
+
+  *pval = it->second;
+  return true;
+}
+
 /**
  * @brief Check option.
  *
@@ -55,6 +67,14 @@ bool  rvs::options::has_option(const std::string& Option, std::string* pval) {
  *
  */
 bool  rvs::options::has_option(const std::string& Option) {
+  auto it = opt.find(std::string(Option));
+  if (it == opt.end())
+    return false;
+
+  return true;
+}
+
+bool  rvs::options::has_option(std::map<std::string, std::string>& opt, const std::string& Option) {
   auto it = opt.find(std::string(Option));
   if (it == opt.end())
     return false;

@@ -50,6 +50,8 @@ class actionbase {
  public:
   virtual int     property_set(const char*, const char*);
 
+  virtual int register_callback(void (*callback)(void));
+
   //! Virtual action function. To be implemented in every derived class.
   virtual int     run(void) = 0;
   bool has_property(const std::string& key, std::string* pval);
@@ -195,6 +197,9 @@ class actionbase {
 
   //! logging level
   int property_log_level;
+
+  //! callback
+  void (*callback)(void);
 };
 
 }  // namespace rvs

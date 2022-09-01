@@ -33,7 +33,7 @@
 #include "include/action.h"
 
 /**
- * @defgroup PBQT PBQT Module
+ * @defgroup PBQT Module
  *
  * @brief P2P Qualification Test Module
  *
@@ -92,6 +92,11 @@ extern "C" int rvs_module_action_property_set(void* pAction,
                                               const char* Key,
                                               const char* Val) {
   return static_cast<rvs::actionbase*>(pAction)->property_set(Key, Val);
+}
+
+extern "C" int rvs_module_action_register_callback(void* pAction,
+                                                    void (*callback)(void)) {
+  return static_cast<rvs::actionbase*>(pAction)->register_callback(callback);
 }
 
 extern "C" int rvs_module_action_run(void* pAction) {

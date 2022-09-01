@@ -26,6 +26,7 @@
 #define RVS_INCLUDE_RVSEXEC_H_
 
 #include <string>
+#include <map>
 #include "yaml-cpp/node/node.h"
 
 
@@ -49,6 +50,7 @@ class exec {
   ~exec();
 
   int run();
+  int run(std::map<std::string, std::string>& opt);
 
  protected:
   void  do_help(void);

@@ -171,8 +171,11 @@ rvs::module* rvs::module::find_create_module(const char* name) {
     void* psolib = dlopen(sofullname.c_str(), RTLD_NOW);
     // error?
     if (!psolib) {
-      //Search libraries in current path for backward compatibility
-      rvs::options::has_option("pwd", &libpath); // has ending forward slash too
+      //Search libraries in current path set in pwd option for backward compatibility
+      if(false == rvs::options::has_option("pwd", &libpath)) {
+        //Search libraries in current path if pwd option not set
+        libpath = "./";
+      } // has ending forward slash too
       string sofullname(libpath + it->second);
       psolib = dlopen(sofullname.c_str(), RTLD_NOW);
       // error?
@@ -595,9 +598,4 @@ void rvs::module::do_list_modules(void) {
     rvs::module::action_destroy(pa);
   }
 }
-
-
-
-
-
 

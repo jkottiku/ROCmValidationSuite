@@ -223,6 +223,157 @@ int rvs::exec::run() {
   return 0;
 }
 
+/**
+ * @brief Main executor method.
+ *
+ * @return 0 if successful, non-zero otherwise
+ *
+ */
+int rvs::exec::run(std::map<std::string, std::string>& opt) {
+
+  int     sts = 0;
+  string  val;
+  string  path;
+  string  module;
+
+  logger::log_level(rvs::logerror);
+
+  rvs::options::has_option(opt, "module", &module);
+
+  if (rvs::options::has_option(opt, "loglevel", &val)) {
+    int level;
+    try {
+      level = std::stoi(val);
+    }
+    catch(...) {
+      char buff[1024];
+      snprintf(buff, sizeof(buff),
+                "logging level not integer: %s", val.c_str());
+      rvs::logger::Err(buff, MODULE_NAME_CAPS);
+      return -1;
+    }
+    if (level < 0 || level > 5) {
+      char buff[1024];
+      snprintf(buff, sizeof(buff),
+                "logging level not in range [0..5]: %s", val.c_str());
+      rvs::logger::Err(buff, MODULE_NAME_CAPS);
+      return -1;
+    }
+    logger::log_level(level);
+  }
+
+  // if verbose is set, set logging level to the max value (i.e. 5)
+  if (rvs::options::has_option("verbose")) {
+    logger::log_level(5);
+  }
+
+  string config_file;
+  if (rvs::options::has_option("conf", &val)) {
+    config_file = val;
+  } else {
+
+#define RVS_MODULE_MAX 10 
+    std::map <std::string, int> module_map = {
+      {"babel", 0},
+      {"gpup", 1},
+      {"gst", 2},
+      {"iet", 3},
+      {"mem", 4},
+      {"pebb", 5},
+      {"peqt", 6},
+      {"pesm", 7},
+      {"pbqt", 8},
+      {"rcqt", 9}};
+
+    string module_config_file[RVS_MODULE_MAX] =
+    {
+      "babel.conf",
+      "gpup_single.conf",
+      "gst_single.conf",
+      "iet_single.conf",
+      "mem.conf",
+      "pebb_single.conf",
+      "peqt_single.conf",
+      "pesm_1.conf",
+      "pbqt_single.conf",
+      "rcqt_single.conf"
+    };
+
+    auto itr = module_map.find(module);
+    int module_index = itr->second; 
+
+    if(RVS_MODULE_MAX <= module_index) { 
+      return -1;
+    }
+
+    config_file = "../share/rocm-validation-suite/conf/" + module_config_file[module_index];
+    // Check if pConfig file exist if not use old path for backward compatibility
+    std::ifstream file(path + config_file);
+    if (!file.good()) {
+      config_file = "conf/" + module_config_file[2];
+    }
+    file.close();
+    config_file = path + config_file;
+  }
+
+  // Check if pConfig file exists
+  std::ifstream file(config_file);
+  if (!file.good()) {
+    char buff[1024];
+    snprintf(buff, sizeof(buff),
+              "%s file is missing.", config_file.c_str());
+    rvs::logger::Err(buff, MODULE_NAME_CAPS);
+    return -1;
+  } else {
+    file.close();
+  }
+
+  // construct modules configuration file relative path
+  val = path + "../share/rocm-validation-suite/conf/.rvsmodules.config";
+  // Check if config file exists if not check the old file location for backward compatibility
+  std::ifstream conf_file(val);
+  if (!conf_file.good()) {
+    val = path + ".rvsmodules.config";
+  }
+  conf_file.close();
+
+  if (rvs::module::initialize(val.c_str())) {
+    return 1;
+  }
+
+  DTRACE_
+  try {
+    sts = do_yaml(config_file);
+  } catch(std::exception& e) {
+    sts = -999;
+    char buff[1024];
+    snprintf(buff, sizeof(buff),
+             "error processing configuration file: %s", config_file.c_str());
+    rvs::logger::Err(buff, MODULE_NAME_CAPS);
+    snprintf(buff, sizeof(buff),
+             "exception: %s", e.what());
+    rvs::logger::Err(buff, MODULE_NAME_CAPS);
+  }
+
+  rvs::module::terminate();
+  logger::terminate();
+
+  DTRACE_
+  if (sts) {
+    DTRACE_
+    return sts;
+  }
+
+  // if stop was requested
+  if (rvs::logger::Stopping()) {
+    DTRACE_
+    return -1;
+  }
+
+  DTRACE_
+  return 0;
+}
+
 //! Reports version strin
 void rvs::exec::do_version() {
   cout << LIB_VERSION_STRING << '\n';

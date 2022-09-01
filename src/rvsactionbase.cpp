@@ -72,6 +72,10 @@ int rvs::actionbase::property_set(const char* pKey, const char* pVal) {
   return 0;
 }
 
+int rvs::actionbase::register_callback(void (*callback)(void)) {
+
+}
+
 /**
  * @brief Pauses current thread for the given time period
  *
