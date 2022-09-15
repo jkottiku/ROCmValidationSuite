@@ -25,6 +25,7 @@
 
 #include <string.h>
 #include <include/rvs.h>
+#include <include/rvsinternal.h>
 #include <include/rvsexec.h>
 #include <map>
 
@@ -32,31 +33,6 @@
 extern "C" {
 #endif
 
-/**************************************/
-
-typedef enum {
-  RVS_STATE_INITIALIZED,
-  RVS_STATE_UNINITIALIZED
-} rvs_state_t;
-
-typedef enum {
-  RVS_SESSION_STATE_IDLE = 0,
-  RVS_SESSION_STATE_CREATED,
-  RVS_SESSION_STATE_READY,
-  RVS_SESSION_STATE_INPROGRESS,
-  RVS_SESSION_STATE_COMPLETED
-} rvs_session_state_t;
-
-typedef struct rvs_session_ {
-
-  rvs_session_id_t id;
-  rvs_session_state_t state;
-  rvs_session_callback callback;
-  rvs_session_property_t property;
-
-} rvs_session_t;
-
-#define RVS_MAX_SESSIONS 1
 rvs_state_t rvs_state = RVS_STATE_UNINITIALIZED;
 rvs_session_t rvs_session[RVS_MAX_SESSIONS];
 
