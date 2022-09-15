@@ -836,6 +836,10 @@ int pbqt_action::print_final_average() {
 
     rvs::lp::Log(msg, rvs::logresults);
 
+    if(nullptr != callback) {
+      callback(msg.c_str(), user_param);
+    }
+
 #if 0
     if (bjson) {
       unsigned int sec;

@@ -278,7 +278,7 @@ rvs::action* rvs::module::action_create(const char* name) {
     return nullptr;
   }
 
-  // create lib action objct
+  // create lib action object
   void* plibaction = m->action_create();
   if (!plibaction)  {
     char buff[1024];
@@ -466,11 +466,12 @@ int rvs::module::init_interface_method(void** ppfunc, const char* pMethodName) {
     snprintf(buff, sizeof(buff),
               "could not find .so method '%s'", pMethodName);
     rvs::logger::Err(buff, MODULE_NAME_CAPS);
+    printf("could not find .so method '%s'", pMethodName);
     return -1;
   }
 
   *ppfunc = pf;
-
+   
   return 0;
 }
 
@@ -547,6 +548,11 @@ int rvs::module::init_interface_1(void) {
   if (init_interface_method(
     reinterpret_cast<void**>(&(pif1->rvs_module_action_run)),
                             "rvs_module_action_run"))
+    sts--;
+
+  if (init_interface_method(
+    reinterpret_cast<void**>(&(pif1->rvs_module_action_callback_set)),
+                            "rvs_module_action_callback_set"))
     sts--;
 
   if (sts) {

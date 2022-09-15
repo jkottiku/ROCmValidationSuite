@@ -52,7 +52,10 @@ class exec {
   int run();
   int run(std::map<std::string, std::string>& opt);
 
+  int set_callback(void (*callback)(const char * output, int user_param), int user_param);
+
  protected:
+
   void  do_help(void);
   void  do_version(void);
   int   do_gpu_list(void);
@@ -65,6 +68,9 @@ class exec {
   int   do_yaml_properties_collection(const YAML::Node& node,
                                       const std::string& parent_name,
                                       if1* pif1);
+
+  void (*callback)(const char * output, int user_param);
+  int user_param;
 };
 
 }  // namespace rvs

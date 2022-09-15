@@ -63,6 +63,20 @@ rvs_session_t rvs_session[RVS_MAX_SESSIONS];
 rvs_status_t rvs_get_session_instance(unsigned int *session_idx);
 rvs_status_t rvs_validate_session(rvs_session_id_t session_id, unsigned int *session_idx);
 
+void rvs_callback(const char * output, int user_param) {
+
+  rvs_results_t results;
+
+  unsigned int session_idx = 0;
+
+  if (RVS_STATUS_SUCCESS != rvs_validate_session((rvs_session_id_t)user_param, &session_idx)) {
+  }
+
+  results.output_log = output;
+  rvs_session[session_idx].callback((rvs_session_id_t)user_param, &results);
+
+}
+
 rvs_status_t rvs_initialize() {
 
   if (RVS_STATE_INITIALIZED == rvs_state) {
@@ -97,7 +111,7 @@ rvs_status_t rvs_session_create(rvs_session_id_t *session_id, rvs_session_callba
   rvs_session[session_idx].state = RVS_SESSION_STATE_CREATED;
   rvs_session[session_idx].callback = session_cb;
 
-  *session_id = rvs_session[session_idx].id; 
+  *session_id = rvs_session[session_idx].id;
 
   return RVS_STATUS_SUCCESS;
 }
@@ -177,6 +191,8 @@ rvs_status_t rvs_session_execute(rvs_session_id_t session_id) {
         opt.insert({"module", module[rvs_session[session_idx].property.default_conf.module]});
 
         rvs::exec executor;
+
+        executor.set_callback(rvs_callback, (int)session_id);
         executor.run(opt);
       }
       break;

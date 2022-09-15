@@ -94,13 +94,12 @@ extern "C" int rvs_module_action_property_set(void* pAction,
   return static_cast<rvs::actionbase*>(pAction)->property_set(Key, Val);
 }
 
-extern "C" int rvs_module_action_register_callback(void* pAction,
-                                                    void (*callback)(void)) {
-  return static_cast<rvs::actionbase*>(pAction)->register_callback(callback);
+extern "C" int rvs_module_action_callback_set(void* pAction,
+                                              void (*callback)(const char * output, int user_param), int user_param) {
+  return static_cast<rvs::actionbase*>(pAction)->callback_set(callback, user_param);
 }
 
 extern "C" int rvs_module_action_run(void* pAction) {
   return static_cast<rvs::actionbase*>(pAction)->run();
 }
-
 

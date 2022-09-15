@@ -95,11 +95,11 @@ typedef struct rvs_session_property_t {
 
 typedef struct rvs_results_t {
   rvs_status_t status;
-  char *output_log;
+  const char *output_log;
   unsigned int output_log_length;
 };
 
-typedef void (*rvs_session_callback) (rvs_session_id_t session_id, rvs_results_t results);
+typedef void (*rvs_session_callback) (rvs_session_id_t session_id, rvs_results_t *results);
 
 rvs_status_t rvs_initialize();
 rvs_status_t rvs_session_create(rvs_session_id_t *session_id, rvs_session_callback session_cb);

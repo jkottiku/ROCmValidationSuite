@@ -50,6 +50,8 @@ rvs::actionbase::actionbase() {
   property_log_level = 2;
   property_device_all = true;
   property_device_id = 0u;
+  callback = nullptr;
+  user_param = 0u;
 }
 
 /**
@@ -72,8 +74,22 @@ int rvs::actionbase::property_set(const char* pKey, const char* pVal) {
   return 0;
 }
 
-int rvs::actionbase::register_callback(void (*callback)(void)) {
+/**
+ * @brief Sets action callback
+ *
+ * @param callback Callback function
+ * @param userparam User parameter for callback
+ * @return 0 - success. non-zero otherwise
+ *
+ * */
+int rvs::actionbase::callback_set(void (*callback)(const char * output, int user_param), int user_param) {
 
+  if(nullptr == callback) {
+    return 1;
+  }
+  this->callback = callback;
+  this->user_param = user_param;
+  return 0;
 }
 
 /**

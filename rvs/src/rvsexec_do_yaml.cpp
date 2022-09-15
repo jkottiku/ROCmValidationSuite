@@ -139,6 +139,11 @@ int rvs::exec::do_yaml(const std::string& config_file) {
       pif1->property_set(p, clit->second);
     }
 
+    // Set Callback
+    if(nullptr != callback) {
+      pif1->callback_set(callback, user_param);
+    }
+
     // execute action
     sts = pif1->run();
 

@@ -43,9 +43,10 @@ namespace rvs {
 class if1 : public ifbase {
  public:
   virtual ~if1();
-  virtual int   property_set(const char*, const char*);
-  virtual int   property_set(const std::string&, const std::string&);
-  virtual int   run(void);
+  virtual int property_set(const char*, const char*);
+  virtual int property_set(const std::string&, const std::string&);
+  virtual int run(void);
+  virtual int callback_set(void (*callback)(const char * output, int user_param), int user_param);
 
  protected:
   if1();
@@ -58,7 +59,9 @@ class if1 : public ifbase {
   //! Pointer to module function doing property set
   t_rvs_module_action_property_set  rvs_module_action_property_set;
   //! Pointer to module function implementing run() functionality
-  t_rvs_module_action_run           rvs_module_action_run;
+  t_rvs_module_action_run rvs_module_action_run;
+  //! Pointer to module function for setting callback
+  t_rvs_module_action_callback_set  rvs_module_action_callback_set;
 
 friend class module;
 };

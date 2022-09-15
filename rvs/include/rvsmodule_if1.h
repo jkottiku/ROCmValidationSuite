@@ -27,16 +27,19 @@
 
 extern "C" {
 
-extern  const char* rvs_module_get_errstring(int error);
-extern  int   rvs_module_action_property_set(void* Action, const char* Key,
-                                             const char* Val);
-extern  int   rvs_module_action_run(void* Action);
+extern const char* rvs_module_get_errstring(int error);
+extern int rvs_module_action_property_set(void* Action, const char* Key,
+                                          const char* Val);
+extern int rvs_module_action_run(void* Action);
 
 // define function pointer types to ease late binding usage
 typedef const char* (*t_rvs_module_get_errstring)(int error);
-typedef int   (*t_rvs_module_action_property_set)(void* Action, const char* Key,
-                                                  const char* Val);
-typedef int   (*t_rvs_module_action_run)(void* Action);
+typedef int (*t_rvs_module_action_property_set)(void* Action, const char* Key,
+                                                const char* Val);
+typedef int (*t_rvs_module_action_run)(void* Action);
+
+typedef int (*t_rvs_module_action_callback_set)(void* pAction,
+                                                void (*callback)(const char * output, int user_param), int user_param);
 
 }
 

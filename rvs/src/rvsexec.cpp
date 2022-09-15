@@ -46,7 +46,7 @@ using std::cout;
 using std::endl;
 
 //! Default constructor
-rvs::exec::exec() {
+rvs::exec::exec(): callback(nullptr), user_param(0) {
 }
 
 //! Default destructor
@@ -224,6 +224,25 @@ int rvs::exec::run() {
 }
 
 /**
+ * @brief Set callback
+ * @param callback Callback function
+ * @param user_param User parameter for callback
+ * @return 0 if successful, non-zero otherwise
+ *
+ */
+int rvs::exec::set_callback(void (*callback)(const char * output, int user_param), int user_param) {
+
+  if (nullptr == callback) {
+    DTRACE_
+    return -1;
+  }
+
+  this->callback = callback;
+  this->user_param = user_param;
+  return 0;
+}
+
+/**
  * @brief Main executor method.
  *
  * @return 0 if successful, non-zero otherwise
@@ -310,7 +329,7 @@ int rvs::exec::run(std::map<std::string, std::string>& opt) {
     // Check if pConfig file exist if not use old path for backward compatibility
     std::ifstream file(path + config_file);
     if (!file.good()) {
-      config_file = "conf/" + module_config_file[2];
+      config_file = "conf/" + module_config_file[module_index];
     }
     file.close();
     config_file = path + config_file;
@@ -470,3 +489,4 @@ int rvs::exec::do_gpu_list() {
 
   return sts;
 }
+
