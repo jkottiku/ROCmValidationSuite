@@ -27,9 +27,9 @@
 
 #include <string>
 
+#include "include/rvsactionbase.h"
 #include "include/rvsmodule_if1.h"
 #include "include/rvsif_base.h"
-
 
 namespace rvs {
 
@@ -46,7 +46,7 @@ class if1 : public ifbase {
   virtual int property_set(const char*, const char*);
   virtual int property_set(const std::string&, const std::string&);
   virtual int run(void);
-  virtual int callback_set(void (*callback)(const char * output, int user_param), int user_param);
+  virtual int callback_set(void (*callback)(const action_result_t * result, void * user_param), void * user_param);
 
  protected:
   if1();

@@ -122,7 +122,7 @@ else()
 endif()
 
 ## define include directories
-include_directories(./ ../ ${YAML_INC_DIR} ${YAML_LIB_DIR}/include)
+include_directories(./ ../ ../../ ${YAML_INC_DIR} ${YAML_LIB_DIR}/include)
 ## define lib directories
 link_directories(${CMAKE_CURRENT_BINARY_DIR} ${RVS_LIB_DIR} ${ASAN_LIB_PATH})
 ## additional libraries

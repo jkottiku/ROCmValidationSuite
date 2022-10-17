@@ -39,8 +39,8 @@ typedef int (*t_rvs_module_action_property_set)(void* Action, const char* Key,
 typedef int (*t_rvs_module_action_run)(void* Action);
 
 typedef int (*t_rvs_module_action_callback_set)(void* pAction,
-                                                void (*callback)(const char * output, int user_param), int user_param);
-
+                                                 void (*callback)(const rvs::action_result_t * result, void * user_param),
+                                                 void * user_param);
 }
 
 #endif  // RVS_INCLUDE_RVSMODULE_IF1_H_

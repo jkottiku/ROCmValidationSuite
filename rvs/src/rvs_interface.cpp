@@ -39,6 +39,7 @@ rvs_session_t rvs_session[RVS_MAX_SESSIONS];
 rvs_status_t rvs_get_session_instance(unsigned int *session_idx);
 rvs_status_t rvs_validate_session(rvs_session_id_t session_id, unsigned int *session_idx);
 
+#if 0
 void rvs_callback(const char * output, int user_param) {
 
   rvs_results_t results;
@@ -52,6 +53,17 @@ void rvs_callback(const char * output, int user_param) {
   rvs_session[session_idx].callback((rvs_session_id_t)user_param, &results);
 
 }
+#else
+void rvs_callback(const rvs_results_t * results, int user_param) {
+
+  unsigned int session_idx = 0;
+
+  if (RVS_STATUS_SUCCESS != rvs_validate_session((rvs_session_id_t)user_param, &session_idx)) {
+  }
+
+  rvs_session[session_idx].callback((rvs_session_id_t)user_param, results);
+}
+#endif
 
 rvs_status_t rvs_initialize() {
 
@@ -174,14 +186,27 @@ rvs_status_t rvs_session_execute(rvs_session_id_t session_id) {
       break;
 
     case RVS_SESSION_TYPE_CUSTOM_CONF:
-    case RVS_SESSION_TYPE_CUSTOM_ACTION:
       {}
       break;
 
-    default:
-
+    case RVS_SESSION_TYPE_CUSTOM_ACTION:
       {
-        return RVS_STATUS_INVALID_SESSION;}
+        std::map<std::string, std::string> opt;
+        std::string action(rvs_session[session_idx].property.custom_action.config);
+
+        opt.insert({"yaml", action});
+
+        rvs::exec executor;
+
+        executor.set_callback(rvs_callback, (int)session_id);
+        executor.run(opt);
+      }
+      break;
+
+    default:
+      {
+        return RVS_STATUS_INVALID_SESSION;
+      }
   }
 
   return RVS_STATUS_SUCCESS;

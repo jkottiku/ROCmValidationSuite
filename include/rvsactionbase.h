@@ -32,13 +32,29 @@
 #include "include/rvs_util.h"
 
 namespace rvs {
+
+enum class actionstate {
+  ACTION_RUNNING,
+  ACTION_COMPLETED
+};
+
+enum class actionstatus {
+  ACTION_SUCCESS,
+  ACTION_FAILED
+};
+
+typedef struct {
+  actionstate state;
+  actionstatus status;
+  const char * output;
+} action_result_t;
+
 /**
  * @class actionbase
  * @ingroup RVS
  * @brief Base class for all module level actions
  *
  */
-
 class actionbase {
  public:
   virtual ~actionbase();
@@ -49,8 +65,9 @@ class actionbase {
 
  public:
   virtual int property_set(const char*, const char*);
-  
-  int callback_set(void (*callback)(const char * output, int user_param), int user_param);
+ 
+  //! Set action callback 
+  int callback_set(void (*callback)(const action_result_t * result, void * user_param), void * user_param);
 
   //! Virtual action function. To be implemented in every derived class.
   virtual int run(void) = 0;
@@ -199,11 +216,10 @@ class actionbase {
   int property_log_level;
 
   //! callback
-  void (*callback)(const char * output, int user_param);
- 
-  //! User parameter
-  int user_param;
+  void (*callback)(const action_result_t * result, void * user_param);
 
+  //! User parameter
+  void * user_param;
 };
 
 }  // namespace rvs

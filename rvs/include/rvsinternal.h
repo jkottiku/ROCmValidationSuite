@@ -36,14 +36,6 @@ typedef enum {
   RVS_STATE_UNINITIALIZED
 } rvs_state_t;
 
-typedef enum {
-  RVS_SESSION_STATE_IDLE = 0,
-  RVS_SESSION_STATE_CREATED,
-  RVS_SESSION_STATE_READY,
-  RVS_SESSION_STATE_INPROGRESS,
-  RVS_SESSION_STATE_COMPLETED
-} rvs_session_state_t;
-
 typedef struct rvs_session_ {
   rvs_session_id_t id;
   rvs_session_state_t state;

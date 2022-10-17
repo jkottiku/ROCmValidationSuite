@@ -40,6 +40,7 @@
 #include "include/rvsexec.h"
 #include "include/rvsliblogger.h"
 #include "include/rvstrace.h"
+#include "include/rvs.h"
 
 #define MODULE_NAME_CAPS "CLI"
 
@@ -56,6 +57,7 @@
  * @return 0 - all OK, non-zero error
  *
  * */
+#if 0
 int main(int Argc, char**Argv) {
   int sts;
   rvs::cli cli;
@@ -84,7 +86,59 @@ int main(int Argc, char**Argv) {
   return sts;
 #endif
 }
+#endif
 
+void session_callback (rvs_session_id_t session_id, const rvs_results_t *results) {
 
+  printf("%d session id -> %d output -> %s\n", __LINE__, session_id, results->output_log);
+  printf("%d session id -> %d status -> %d\n", __LINE__, session_id, results->status);
+}
 
+int main(int Argc, char**Argv) {
+
+  rvs_status_t status;
+  rvs_session_id_t session_id;
+  rvs_session_property_t session_property = {RVS_SESSION_TYPE_DEFAULT_CONF,{{RVS_MODULE_PBQT}}};
+
+  status = rvs_initialize();
+  printf("%d status -> %d\n", __LINE__, status);
+
+  status = rvs_session_create(&session_id, session_callback);
+  printf("%d status -> %d session_id -> %d\n", __LINE__, status, session_id);
+
+#if 0
+  status = rvs_session_set_property(session_id, &session_property);
+  printf("%d status -> %d\n", __LINE__, status);
+
+  status = rvs_session_execute(session_id);
+  printf("%d status -> %d\n", __LINE__, status);
+#endif
+
+#if 0
+  char config[1024] =
+"actions:\
+- name: action_1\
+  device: all\ 
+  module: pbqt\
+  log_interval: 800\
+  duration: 5000\
+  peers: all\
+  test_bandwidth: true\
+  bidirectional: true\
+  parallel: true\
+  block_size: 1000000 2000000 10000000\
+  device_id: all";
+#else
+char config[1024] = "actions:\n- name: action_1\n  device: all\n  module: pbqt\n  log_interval: 800\n  duration: 5000\n  peers: all\n  test_bandwidth: true\n  bidirectional: true\n  parallel: true\n  block_size: 1000000 2000000 10000000\n  device_id: all";
+#endif
+
+  session_property.type = RVS_SESSION_TYPE_CUSTOM_ACTION;
+  session_property.custom_action.config = config;
+
+  status = rvs_session_set_property(session_id, &session_property);
+  printf("%d status -> %d\n", __LINE__, status);
+
+  status = rvs_session_execute(session_id);
+  printf("%d status -> %d\n", __LINE__, status);
+}
 

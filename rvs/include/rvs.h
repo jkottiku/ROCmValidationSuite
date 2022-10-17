@@ -30,17 +30,27 @@ extern "C" {
 #endif
 
 typedef enum {
-RVS_STATUS_SUCCESS = 0,
-RVS_STATUS_FAILED = -1,
-RVS_STATUS_INVALID_ARGUMENT = -2,
-RVS_STATUS_INVALID_STATE = -3,
-RVS_STATUS_INVALID_SESSION = -4,
-RVS_STATUS_INVALID_SESSION_STATE = -5
+  RVS_STATUS_SUCCESS = 0,
+  RVS_STATUS_FAILED = -1,
+  RVS_STATUS_INVALID_ARGUMENT = -2,
+  RVS_STATUS_INVALID_STATE = -3,
+  RVS_STATUS_INVALID_SESSION = -4,
+  RVS_STATUS_INVALID_SESSION_STATE = -5
 /*
  * Not Supported,
  * Module not found
  * */
 } rvs_status_t;
+
+typedef enum {
+  RVS_SESSION_STATE_FAILED = -1,
+  RVS_SESSION_STATE_IDLE = 0,
+  RVS_SESSION_STATE_CREATED,
+  RVS_SESSION_STATE_READY,
+  RVS_SESSION_STATE_STARTED,
+  RVS_SESSION_STATE_INPROGRESS,
+  RVS_SESSION_STATE_COMPLETED
+} rvs_session_state_t;
 
 typedef unsigned int rvs_session_id_t;
 
@@ -69,7 +79,6 @@ typedef enum rvs_module_t {
 typedef struct rvs_session_default_conf_t {
 
  rvs_module_t module;
- 
 };
 
 typedef struct rvs_session_custom_conf_t {
@@ -78,8 +87,7 @@ typedef struct rvs_session_custom_conf_t {
 };
 
 typedef struct rvs_session_custom_action_t {
-
- 
+  const char * config;
 };
 
 typedef struct rvs_session_property_t {
@@ -95,11 +103,11 @@ typedef struct rvs_session_property_t {
 
 typedef struct rvs_results_t {
   rvs_status_t status;
+  rvs_session_state_t state;
   const char *output_log;
-  unsigned int output_log_length;
 };
 
-typedef void (*rvs_session_callback) (rvs_session_id_t session_id, rvs_results_t *results);
+typedef void (*rvs_session_callback) (rvs_session_id_t session_id, const rvs_results_t *results);
 
 rvs_status_t rvs_initialize();
 rvs_status_t rvs_session_create(rvs_session_id_t *session_id, rvs_session_callback session_cb);

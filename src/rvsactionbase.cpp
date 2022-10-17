@@ -82,11 +82,12 @@ int rvs::actionbase::property_set(const char* pKey, const char* pVal) {
  * @return 0 - success. non-zero otherwise
  *
  * */
-int rvs::actionbase::callback_set(void (*callback)(const char * output, int user_param), int user_param) {
+int rvs::actionbase::callback_set(void (*callback)(const action_result_t * result, void * user_param), void * user_param) {
 
-  if(nullptr == callback) {
+  if((nullptr == callback) || (nullptr == user_param)) {
     return 1;
   }
+
   this->callback = callback;
   this->user_param = user_param;
   return 0;
