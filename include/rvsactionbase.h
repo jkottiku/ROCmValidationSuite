@@ -40,7 +40,8 @@ enum class actionstate {
 
 enum class actionstatus {
   ACTION_SUCCESS,
-  ACTION_FAILED
+  ACTION_FAILED,
+  ACTION_ERROR
 };
 
 typedef struct {

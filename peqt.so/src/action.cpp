@@ -475,6 +475,15 @@ int peqt_action::run(void) {
       rvs::lp::LogRecordFlush(json_root_node);
     }
 
+    if(nullptr != callback) {
+      rvs::action_result_t result;
+
+      result.state = rvs::actionstate::ACTION_RUNNING;
+      result.status = rvs::actionstatus::ACTION_SUCCESS;
+      result.output = msg.c_str();
+      callback(&result, user_param);
+    }
+
     RVSTRACE_
     return 0;
 }

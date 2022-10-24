@@ -154,6 +154,7 @@ bool perf_action::do_gpu_stress_test(map<int, uint16_t> perf_gpus_device_index) 
             workers[i].set_lda_offset(perf_lda_offset);
             workers[i].set_ldb_offset(perf_ldb_offset);
             workers[i].set_ldc_offset(perf_ldc_offset);
+            workers[i].set_callback(callback, user_param);
             
             i++;
         }
