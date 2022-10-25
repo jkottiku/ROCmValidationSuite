@@ -1,6 +1,6 @@
 /********************************************************************************
- *
- * Copyright (c) 2018-2022 ROCm Developer Tools
+ * 
+ * Copyright (c) 2018-2022 Advanced Micro Devices, Inc.
  *
  * MIT LICENSE:
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -33,39 +33,29 @@
 extern "C" {
 #endif
 
+/*! \var rvs_state_t rvs_state
+    \brief RVS current state
+    \warning Not thread safe!
+*/
 rvs_state_t rvs_state = RVS_STATE_UNINITIALIZED;
+
+/*! \var rvs_session_t rvs_session
+    \brief RVS sessions details
+    \warning Not thread safe!
+*/
 rvs_session_t rvs_session[RVS_MAX_SESSIONS];
 
 rvs_status_t rvs_get_session_instance(unsigned int *session_idx);
 rvs_status_t rvs_validate_session(rvs_session_id_t session_id, unsigned int *session_idx);
+void rvs_callback(const rvs_results_t * results, int user_param);
 
-#if 0
-void rvs_callback(const char * output, int user_param) {
-
-  rvs_results_t results;
-
-  unsigned int session_idx = 0;
-
-  if (RVS_STATUS_SUCCESS != rvs_validate_session((rvs_session_id_t)user_param, &session_idx)) {
-  }
-
-  results.output_log = output;
-  rvs_session[session_idx].callback((rvs_session_id_t)user_param, &results);
-
-}
-#else
-void rvs_callback(const rvs_results_t * results, int user_param) {
-
-  unsigned int session_idx = 0;
-
-  if (RVS_STATUS_SUCCESS != rvs_validate_session((rvs_session_id_t)user_param, &session_idx)) {
-  }
-
-  rvs_session[session_idx].callback((rvs_session_id_t)user_param, results);
-}
-#endif
-
-rvs_status_t rvs_initialize() {
+/**
+ * Initialize RVS(ROCMm Validation Suite) component. 
+ * @param None 
+ * @return RVS_STATUS_SUCCESS - Successfully initialized
+ * @return RVS_STATUS_FAILED - Failed to initialize
+ */
+rvs_status_t rvs_initialize(void) {
 
   if (RVS_STATE_INITIALIZED == rvs_state) {
     return RVS_STATUS_INVALID_STATE;
@@ -77,6 +67,13 @@ rvs_status_t rvs_initialize() {
   return RVS_STATUS_SUCCESS;
 }
 
+/**
+ * Create session for a test, benchmark or qualification routine in RVS. 
+ * @param[out] session_id - Session identifier 
+ * @param[in] session_callback - Session callback function handler 
+ * @return RVS_STATUS_SUCCESS - Successfully created session 
+ * @return RVS_STATUS_FAILED - Failed to create session
+ */
 rvs_status_t rvs_session_create(rvs_session_id_t *session_id, rvs_session_callback session_cb) {
 
   unsigned int session_idx;
@@ -104,6 +101,13 @@ rvs_status_t rvs_session_create(rvs_session_id_t *session_id, rvs_session_callba
   return RVS_STATUS_SUCCESS;
 }
 
+/**
+ * Set property for a session in RVS.
+ * @param[in] session_id - Session identifier 
+ * @param[in] session_property - Session property of test routine
+ * @return RVS_STATUS_SUCCESS - Successfully set property 
+ * @return RVS_STATUS_FAILED - Failed to set property
+ */
 rvs_status_t rvs_session_set_property(rvs_session_id_t session_id, rvs_session_property_t *session_property) {
 
   unsigned int session_idx;
@@ -142,6 +146,12 @@ rvs_status_t rvs_session_set_property(rvs_session_id_t session_id, rvs_session_p
   return RVS_STATUS_SUCCESS;
 }
 
+/**
+ * Execute session test routine based on property set in RVS.
+ * @param[in] session_id - Session identifier 
+ * @return RVS_STATUS_SUCCESS - Successfully launched session 
+ * @return RVS_STATUS_FAILED - Failed to launch session
+ */
 rvs_status_t rvs_session_execute(rvs_session_id_t session_id) {
 
   unsigned int session_idx;
@@ -174,7 +184,8 @@ rvs_status_t rvs_session_execute(rvs_session_id_t session_id) {
           "peqt",
           "pesm",
           "pbqt",
-          "rcqt"};
+          "rcqt",
+          "smqt"};
 
         opt.insert({"module", module[rvs_session[session_idx].property.default_conf.module]});
 
@@ -212,6 +223,12 @@ rvs_status_t rvs_session_execute(rvs_session_id_t session_id) {
   return RVS_STATUS_SUCCESS;
 }
 
+/**
+ * Destroy/Free session after completion of test routine.
+ * @param[in] session_id - Session identifier
+ * @return RVS_STATUS_SUCCESS - Successfully destroyed session 
+ * @return RVS_STATUS_FAILED - Failed to destroy session
+ */
 rvs_status_t rvs_session_destroy(rvs_session_id_t session_id){
 
   unsigned int session_idx;
@@ -236,7 +253,13 @@ rvs_status_t rvs_session_destroy(rvs_session_id_t session_id){
   return RVS_STATUS_SUCCESS;
 }
 
-rvs_status_t rvs_terminate() {
+/**
+ * Terminate/Deinitialize RVS(ROCMm Validation Suite) component. 
+ * @param None 
+ * @return RVS_STATUS_SUCCESS - Successfully deinitialized
+ * @return RVS_STATUS_FAILED - Failed to deinitialize
+ */
+rvs_status_t rvs_terminate(void) {
 
   if (RVS_STATE_INITIALIZED != rvs_state) {
     return RVS_STATUS_INVALID_STATE;
@@ -274,6 +297,16 @@ rvs_status_t rvs_validate_session(rvs_session_id_t session_id, unsigned int *ses
   }
 
   return RVS_STATUS_INVALID_SESSION;
+}
+
+void rvs_callback(const rvs_results_t * results, int user_param) {
+
+  unsigned int session_idx = 0;
+
+  if (RVS_STATUS_SUCCESS != rvs_validate_session((rvs_session_id_t)user_param, &session_idx)) {
+  }
+
+  rvs_session[session_idx].callback((rvs_session_id_t)user_param, results);
 }
 
 #ifdef __cplusplus
