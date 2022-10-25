@@ -106,34 +106,23 @@ int main(int Argc, char**Argv) {
   status = rvs_session_create(&session_id, session_callback);
   printf("%d status -> %d session_id -> %d\n", __LINE__, status, session_id);
 
-#if 0
-  status = rvs_session_set_property(session_id, &session_property);
-  printf("%d status -> %d\n", __LINE__, status);
-
-  status = rvs_session_execute(session_id);
-  printf("%d status -> %d\n", __LINE__, status);
-#endif
-
-#if 0
-  char config[1024] =
-"actions:\
-- name: action_1\
-  device: all\ 
-  module: pbqt\
-  log_interval: 800\
-  duration: 5000\
-  peers: all\
-  test_bandwidth: true\
-  bidirectional: true\
-  parallel: true\
-  block_size: 1000000 2000000 10000000\
-  device_id: all";
-#else
-char config[1024] = "actions:\n- name: action_1\n  device: all\n  module: pbqt\n  log_interval: 800\n  duration: 5000\n  peers: all\n  test_bandwidth: true\n  bidirectional: true\n  parallel: true\n  block_size: 1000000 2000000 10000000\n  device_id: all";
-#endif
+//PBQT
+//char pbqt_config[1024] = "actions:\n- name: action_1\n  device: all\n  module: pbqt\n  log_interval: 800\n  duration: 5000\n  peers: all\n  test_bandwidth: true\n  bidirectional: true\n  parallel: true\n  block_size: 1000000 2000000 10000000\n  device_id: all";
+//GST
+//char gst_config[1024]= "{actions: [{name: gpustress-9000-sgemm-false, device: all, module: gst, parallel: false, count: 1, duration: 10000, copy_matrix: false, target_stress: 9000, matrix_size_a: 8640, matrix_size_b: 8640, matrix_size_c: 8640, ops_type: sgemm, lda: 8640, ldb: 8640, ldc: 8640}]}";
+//IET
+//char iet_config[1024]="{actions: [{name: action_1, device: all, module: iet, parallel: true, count: 1, wait: 100, duration: 50000, ramp_interval: 5000, sample_interval: 700, log_interval: 700, max_violations: 1, target_power: 180, tolerance: 0.06, matrix_size: 8640, ops_type: dgemm}, {name: action_2, device: all, module: iet, parallel: true, count: 1, wait: 100, duration: 50000, ramp_interval: 5000, sample_interval: 1500, log_interval: 2000, max_violations: 1, target_power: 100, tolerance: 0.2, matrix_size: 8640, ops_type: dgemm}]}";
+//PEBB
+//char pebb_config[1024]="{actions: [{name: h2d-sequential-51MB, device: all, module: pebb, log_interval: 800, duration: 50000, device_to_host: true, host_to_device: true, parallel: true, block_size: 51200000, link_type: 2}]}";
+//MEM
+//char mem_config[1024]="{actions: [{name: action_1, device: all, module: mem, parallel: true, count: 1, wait: 100, mapped_memory: false, mem_blocks: 128, num_passes: 500, thrds_per_blk: 64, stress: true, num_iter: 50000, exclude: '9 10'}]}";
+//PEQT
+//char peqt_config[1024]="{actions: [{name: pcie_act_1, device: all, module: peqt, capability: {link_cap_max_speed: null, link_cap_max_width: null, link_stat_cur_speed: null, link_stat_neg_width: null, slot_pwr_limit_value: null, slot_physical_num: null, deviceid: 0, vendor_id: null, kernel_driver: null, dev_serial_num: null, D0_Maximum_Power_12V: null, D0_Maximum_Power_3_3V: null, D0_Sustained_Power_12V: null, D0_Sustained_Power_3_3V: null, atomic_op_routing: null, atomic_op_32_completer: null, atomic_op_64_completer: null, atomic_op_128_CAS_completer: null}}]}";
+//GPUP
+char gpup_config[1024]="[{name: RVS-GPUP-TC2, device: all, module: gpup, properties: {simd_count: null, mem_banks_count: null, io_links_count: null, vendor_id: null, location_id: null, max_engine_clk_ccompute: null}, io_links-properties: {version_major: null, type: null, version_minor: null, node_from: null, node_to: null, recommended_transfer_size: null, flags: null}}]";
 
   session_property.type = RVS_SESSION_TYPE_CUSTOM_ACTION;
-  session_property.custom_action.config = config;
+  session_property.custom_action.config = gpup_config;
 
   status = rvs_session_set_property(session_id, &session_property);
   printf("%d status -> %d\n", __LINE__, status);

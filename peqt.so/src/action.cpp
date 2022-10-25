@@ -479,7 +479,7 @@ int peqt_action::run(void) {
       rvs::action_result_t result;
 
       result.state = rvs::actionstate::ACTION_RUNNING;
-      result.status = rvs::actionstatus::ACTION_SUCCESS;
+      result.status = (true == pci_infra_qual_result) ? rvs::actionstatus::ACTION_SUCCESS:rvs::actionstatus::ACTION_FAILED;
       result.output = msg.c_str();
       callback(&result, user_param);
     }
