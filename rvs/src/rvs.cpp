@@ -119,12 +119,14 @@ int main(int Argc, char**Argv) {
 //PEQT
 //char peqt_config[1024]="{actions: [{name: pcie_act_1, device: all, module: peqt, capability: {link_cap_max_speed: null, link_cap_max_width: null, link_stat_cur_speed: null, link_stat_neg_width: null, slot_pwr_limit_value: null, slot_physical_num: null, deviceid: 0, vendor_id: null, kernel_driver: null, dev_serial_num: null, D0_Maximum_Power_12V: null, D0_Maximum_Power_3_3V: null, D0_Sustained_Power_12V: null, D0_Sustained_Power_3_3V: null, atomic_op_routing: null, atomic_op_32_completer: null, atomic_op_64_completer: null, atomic_op_128_CAS_completer: null}}]}";
 //GPUP
-//char gpup_config[1024]="[{name: RVS-GPUP-TC2, device: all, module: gpup, properties: {simd_count: null, mem_banks_count: null, io_links_count: null, vendor_id: null, location_id: null, max_engine_clk_ccompute: null}, io_links-properties: {version_major: null, type: null, version_minor: null, node_from: null, node_to: null, recommended_transfer_size: null, flags: null}}]";
+//char gpup_config[1024]="{actions: [{name: RVS-GPUP-TC1, device: all, module: gpup, properties: {all: null}, io_links-properties: {all: null}}, {name: RVS-GPUP-TC2, device: all, module: gpup, properties: {simd_count: null, mem_banks_count: null, io_links_count: null, vendor_id: null, location_id: null, max_engine_clk_ccompute: null}, io_links-properties: {version_major: null, type: null, version_minor: null, node_from: null, node_to: null, recommended_transfer_size: null, flags: null}}, {name: RVS-GPUP-TC3, device: all, module: gpup, properties: {all: null}, io_links-properties: {all: null}}, {name: RVS-GPUP-TC4, device: all, module: gpup, deviceid: null, properties: {all: null}, io_links-properties: {all: null}}, {name: RVS-GPUP-TC5, device: all, module: gpup, deviceid: null, properties: {all: null}, io_links-properties: {all: null}}, {name: RVS-GPUP-TC6, device: all, module: gpup, deviceid: null, properties: {mem_banks_count: null}, io_links-properties: {version_major: null}}]}";
 //RCQT
-char rcqt_config[1024]="{actions: [{name: action_1, device: all, module: rcqt, package: rocm-hip-sdk}, {name: action_2, device: all, module: rcqt, packagelist: 'rocm-hip-libraries rocm-core rocm-dev rocm-hip-runtime-devel rocm-language-runtime rocm-hip-runtime rocm-hip-sdk rocm-utils rocm-smi-lib'}]}";
+//char rcqt_config[1024]="{actions: [{name: action_1, device: all, module: rcqt, package: rocm-hip-sdk}, {name: action_2, device: all, module: rcqt, packagelist: 'rocm-hip-libraries rocm-core rocm-dev rocm-hip-runtime-devel rocm-language-runtime rocm-hip-runtime rocm-hip-sdk rocm-utils rocm-smi-lib'}]}";
+//PESM
+char pesm_config[1024]="{actions: [{name: act1, device: all, deviceid: 0, module: pesm, monitor: true}, {name: act2, device: all, debugwait: 3000, module: pesm, monitor: false}]}";
 
   session_property.type = RVS_SESSION_TYPE_CUSTOM_ACTION;
-  session_property.custom_action.config = rcqt_config;
+  session_property.custom_action.config = pesm_config;
 
   status = rvs_session_set_property(session_id, &session_property);
   printf("%d status -> %d\n", __LINE__, status);
