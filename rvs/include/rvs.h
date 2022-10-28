@@ -66,16 +66,16 @@ typedef unsigned int rvs_session_id_t;
 /*! \enum rvs_session_type_t
  * Types of session supported.
  */
-typedef enum rvs_session_type_t {
+typedef enum {
   RVS_SESSION_TYPE_DEFAULT_CONF, /*!< Session uses default RVS configuration */
   RVS_SESSION_TYPE_CUSTOM_CONF, /*!< Session uses application custom configuration */
   RVS_SESSION_TYPE_CUSTOM_ACTION /*!< Session uses application custom action */
-};
+} rvs_session_type_t;
 
 /*! \enum rvs_module_t
  * Modules present in RVS.
  */
-typedef enum rvs_module_t {
+typedef enum {
   RVS_MODULE_BABEL = 0, /*!< Memory stress Test */
   RVS_MODULE_GPUP, /*!< GPU Properties */
   RVS_MODULE_GST, /*!< GPU Stress Test */
@@ -88,50 +88,50 @@ typedef enum rvs_module_t {
   RVS_MODULE_RCQT, /*!< ROCm Configuration Qualification Tool */
   RVS_MODULE_SMQT, /*!< SBIOS Mapping Qualifications Tool */
   RVS_MODULE_MAX /*!< No. of RVS modules */
-};
+} rvs_module_t;
 
  
 /*! \struct rvs_session_default_conf_t
  *  \brief Session structure for default configuration parameters.
  */
-typedef struct rvs_session_default_conf_t {
+typedef struct {
   rvs_module_t module; /*!< RVS module's default RVS configuration */
-};
+} rvs_session_default_conf_t;
 
 /*! \struct rvs_session_custom_conf_t
  *  \brief Session structure for custom configuration parameters.
  */
-typedef struct rvs_session_custom_conf_t {
+typedef struct {
   const char * path; /*!< Application custom configuration file full path */
-};
+} rvs_session_custom_conf_t;
 
 /*! \struct rvs_session_custom_action_t
  *  \brief Session structure for custom action parameters.
  */
-typedef struct rvs_session_custom_action_t {
+typedef struct {
   const char * config; /*!< Application custom action configuration data (yaml format) */
-};
+} rvs_session_custom_action_t;
 
 /*! \struct rvs_session_property_t
  *  \brief Structure for all session properties.
  */
-typedef struct rvs_session_property_t {
+typedef struct {
   rvs_session_type_t type; /*!< Type of session */
   union {
-    rvs_session_default_conf_t default_conf; /*!< Default configuration */ 
+    rvs_session_default_conf_t default_conf; /*!< Default configuration */
     rvs_session_custom_conf_t custom_conf; /*!< Custom configuration */
     rvs_session_custom_action_t custom_action; /*!< Custom action configuration */
   };
-};
+} rvs_session_property_t;
 
 /*! \struct rvs_results_t
  *  \brief Structure for session output results.
  */
-typedef struct rvs_results_t {
+typedef struct {
   rvs_status_t status; /*!< Result status */
   rvs_session_state_t state; /*!< Session state */
   const char *output_log; /* Output result log */
-};
+} rvs_results_t;
 
 /*!
  * RVS session callback function pointer 
