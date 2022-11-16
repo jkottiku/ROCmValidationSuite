@@ -109,7 +109,7 @@ int main(int Argc, char**Argv) {
 //PBQT
 //char pbqt_config[1024] = "actions:\n- name: action_1\n  device: all\n  module: pbqt\n  log_interval: 800\n  duration: 5000\n  peers: all\n  test_bandwidth: true\n  bidirectional: true\n  parallel: true\n  block_size: 1000000 2000000 10000000\n  device_id: all";
 //GST
-//char gst_config[1024]= "{actions: [{name: gpustress-9000-sgemm-false, device: all, module: gst, parallel: false, count: 1, duration: 10000, copy_matrix: false, target_stress: 9000, matrix_size_a: 8640, matrix_size_b: 8640, matrix_size_c: 8640, ops_type: sgemm, lda: 8640, ldb: 8640, ldc: 8640}]}";
+char gst_config[1024]= "{actions: [{name: gpustress-9000-sgemm-false, device: all, device_index: all, module: gst, parallel: false, count: 1, duration: 10000, copy_matrix: false, target_stress: 9000, matrix_size_a: 8640, matrix_size_b: 8640, matrix_size_c: 8640, ops_type: sgemm, lda: 8640, ldb: 8640, ldc: 8640}]}";
 //IET
 //char iet_config[1024]="{actions: [{name: action_1, device: all, module: iet, parallel: true, count: 1, wait: 100, duration: 50000, ramp_interval: 5000, sample_interval: 700, log_interval: 700, max_violations: 1, target_power: 180, tolerance: 0.06, matrix_size: 8640, ops_type: dgemm}, {name: action_2, device: all, module: iet, parallel: true, count: 1, wait: 100, duration: 50000, ramp_interval: 5000, sample_interval: 1500, log_interval: 2000, max_violations: 1, target_power: 100, tolerance: 0.2, matrix_size: 8640, ops_type: dgemm}]}";
 //PEBB
@@ -123,10 +123,10 @@ int main(int Argc, char**Argv) {
 //RCQT
 //char rcqt_config[1024]="{actions: [{name: action_1, device: all, module: rcqt, package: rocm-hip-sdk}, {name: action_2, device: all, module: rcqt, packagelist: 'rocm-hip-libraries rocm-core rocm-dev rocm-hip-runtime-devel rocm-language-runtime rocm-hip-runtime rocm-hip-sdk rocm-utils rocm-smi-lib'}]}";
 //PESM
-char pesm_config[1024]="{actions: [{name: act1, device: all, deviceid: 0, module: pesm, monitor: true}, {name: act2, device: all, debugwait: 3000, module: pesm, monitor: false}]}";
+//char pesm_config[1024]="{actions: [{name: act1, device: all, deviceid: 0, module: pesm, monitor: true}, {name: act2, device: all, debugwait: 3000, module: pesm, monitor: false}]}";
 
   session_property.type = RVS_SESSION_TYPE_CUSTOM_ACTION;
-  session_property.custom_action.config = pesm_config;
+  session_property.custom_action.config = gst_config;
 
   status = rvs_session_set_property(session_id, &session_property);
   printf("%d status -> %d\n", __LINE__, status);

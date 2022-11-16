@@ -49,6 +49,7 @@ using std::string;
 rvs::actionbase::actionbase() {
   property_log_level = 2;
   property_device_all = true;
+  property_device_index_all = true;
   property_device_id = 0u;
   callback = nullptr;
   user_param = 0u;
@@ -148,6 +149,14 @@ int rvs::actionbase::property_get_device() {
     YAML_DEVICE_PROP_DELIMITER,
     &property_device,
     &property_device_all);
+}
+
+int rvs::actionbase::property_get_device_index() {
+  return property_get_uint_list<uint16_t>(
+    RVS_CONF_DEVICE_INDEX_KEY,
+    YAML_DEVICE_PROP_DELIMITER,
+    &property_device_index,
+    &property_device_index_all);
 }
 
 /**

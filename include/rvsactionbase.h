@@ -75,10 +75,11 @@ class actionbase {
   bool has_property(const std::string& key, std::string* pval);
   bool has_property(const std::string& key);
   int property_get_device();
+  int property_get_device_index();
 
   /**
   * @brief Gets uint16_t list from the module's properties collection
-  * @param key jey name
+  * @param key key name
   * @param delimiter delimiter in YAML file
   * @param pval ptr to reulting list
   * @param pball ptr to flag to be set to 'true' when "all" is detected
@@ -192,6 +193,10 @@ class actionbase {
   std::string action_name;
   //! device_id - non-zero if filtering of device id is required
   uint16_t property_device_id;
+  //! device_index - if filtering of device index is required
+  std::vector<uint16_t> property_device_index;
+  //! 'true' when all devices are selected ('device_index: all')
+  bool property_device_index_all;
   //! array of GPU IDs listed in config 'device' key
   std::vector<uint16_t> property_device;
   //! 'true' when all devices are selected ('device: all')
