@@ -378,8 +378,10 @@ constexpr uint64_t mall_size = 256 * 1024 * 1024;
 constexpr uint64_t mem_size_per_wg = 32 * 1024 * 1024;
 const uint64_t wg_mem_pad = 4352;
 constexpr uint64_t wg_stride = mem_size_per_wg + wg_mem_pad;
-const uint32_t vmem_unroll = 2;
+const uint32_t vmem_unroll = 8;
 const uint32_t wg_size = 1024;
+const uint32_t wg_size_load = 512;
+const uint32_t load_waves = wg_size_load / 64;
 
 #define T __uint128_t
 
@@ -402,6 +404,7 @@ template<bool NT> __device__ T _load(T* __restrict p)
   return v;
 }
 
+#if 0
 template<bool NT>
 __global__ void bw_kernel(T* __restrict p, T* __restrict r, uint32_t iters)
 {
@@ -426,6 +429,80 @@ __global__ void bw_kernel(T* __restrict p, T* __restrict r, uint32_t iters)
   {
     *r = v + m[100];
   }
+}
+#endif
+
+template<bool NT>
+__global__ void bw_kernel(T* __restrict p, T* __restrict r, uint32_t iters)
+{
+    T v{};
+    T* wg_p = (T*)((char*)p + blockIdx.x * wg_stride);
+    volatile __shared__ uint32_t m[16383];
+    __shared__ uint32_t s;
+
+    m[threadIdx.x] = threadIdx.x + 16598013 + 1547299898;
+
+    if (threadIdx.x % 64 == 0)
+    {
+        s = 0;
+    }
+
+    if (threadIdx.x < wg_size_load)
+    {
+        for (uint32_t i = 0; i < iters; i++)
+        {
+            uint32_t offs = i * vmem_unroll * wg_size_load + threadIdx.x;
+            #pragma unroll
+            for (uint32_t j = 0; j < vmem_unroll; j++)
+            {
+                v |= _load<NT>(&wg_p[offs]);
+                offs += wg_size_load;
+            }
+        }
+        if (threadIdx.x % 64 == 0)
+        {
+            atomicAdd(&s, 1);
+        }
+    }
+    else
+    {
+#if 1
+        const uint64_t a[2] = { 0x3faaaaaa3faaaaaaull, 0x3f5555553f555555ull };
+        const uint64_t b[2] = { 0x60aaaaaa60aaaaaaull, 0x21357BDA21357BDAull };
+        const uint64_t c[2] = { 0x41247C1141247C11ull, 0x429334F6429334F6ull };
+        uint32_t t = threadIdx.x * 4;
+        uint32_t d;
+
+        while (s < load_waves)
+        {
+            #pragma unroll
+            for (int j = 0; j < 64; j++)
+            {
+                asm volatile (
+                    "s_waitcnt lgkmcnt(8) \n"
+                    "ds_read_b32 %0, %1 offset:0 \n"
+                    : "=v"(d)
+                    : "v"(t + (j % 2) * 64)
+                    : );
+                asm volatile (
+                    "v_pk_fma_f32 v[6:7], %0, %1, %2 \n"
+                    "v_pk_fma_f32 v[8:9], %3, %4, %5 \n"
+                    "v_pk_fma_f32 v[6:7], %0, %1, %2 \n"
+                    "v_pk_fma_f32 v[8:9], %3, %4, %5 \n"
+                    "v_pk_fma_f32 v[6:7], %0, %1, %2 \n"
+                    "v_pk_fma_f32 v[8:9], %3, %4, %5"
+                    :
+                    : "v"(a[0]), "v"(b[0]), "v"(c[0]), "v"(a[1]), "v"(b[1]), "v"(c[1])
+                    : "v6", "v7", "v8", "v9");
+            }
+        }
+#endif
+    }
+
+    if (v == 10000000)
+    {
+        *r = v + m[100];
+    }
 }
 
 bool FillMemory(uint32_t* p, size_t size)
