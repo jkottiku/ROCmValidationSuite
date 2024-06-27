@@ -1,6 +1,6 @@
 /********************************************************************************
  *
- * Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
  *
  * MIT LICENSE:
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -207,12 +207,18 @@ bool IETWorker::do_iet_power_stress(void) {
     std::thread compute_t;
     std::thread bandwidth_t;
 
-    // Start default compute thread
-    compute_t = std::thread(&IETWorker::blasThread, this, gpu_device_index, matrix_size, iet_ops_type, start, run_duration_ms,
-            iet_trans_a, iet_trans_b, iet_alpha_val, iet_beta_val, iet_lda_offset, iet_ldb_offset, iet_ldc_offset, iet_ldd_offset);
+    // Start compute thread if compute workload is enabled (by default enabled)
+    if (iet_cp_workload) {
+
+      // Start compute workload thread
+      compute_t = std::thread(&IETWorker::blasThread, this, gpu_device_index, matrix_size, iet_ops_type, start, run_duration_ms,
+          iet_trans_a, iet_trans_b, iet_alpha_val, iet_beta_val, iet_lda_offset, iet_ldb_offset, iet_ldc_offset, iet_ldd_offset);
+    }
 
     // Start bandwidth thread if bandwidth workload is enabled
     if (iet_bw_workload) {
+
+      // Start bandwidth workload thread
       bandwidth_t = std::thread(&IETWorker::bandwidthThread, this, gpu_device_index, run_duration_ms);
     }
 
