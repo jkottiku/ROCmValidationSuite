@@ -404,34 +404,6 @@ template<bool NT> __device__ T _load(T* __restrict p)
   return v;
 }
 
-#if 0
-template<bool NT>
-__global__ void bw_kernel(T* __restrict p, T* __restrict r, uint32_t iters)
-{
-  T v{};
-  T* wg_p = (T*)((char*)p + blockIdx.x * wg_stride);
-  volatile __shared__ uint32_t m[16384];
-  uint32_t t = threadIdx.x * 4;
-  uint32_t d;
-
-  for (uint32_t i = 0; i < iters; i++)
-  {
-    uint32_t offs = i * vmem_unroll * wg_size + threadIdx.x;
-#pragma unroll
-    for (uint32_t j = 0; j < vmem_unroll; j++)
-    {
-      v |= _load<NT>(&wg_p[offs]);
-      offs += wg_size;
-    }
-  }
-
-  if (v == 10000000)
-  {
-    *r = v + m[100];
-  }
-}
-#endif
-
 template<bool NT>
 __global__ void bw_kernel(T* __restrict p, T* __restrict r, uint32_t iters)
 {
@@ -466,7 +438,7 @@ __global__ void bw_kernel(T* __restrict p, T* __restrict r, uint32_t iters)
     }
     else
     {
-#if 1
+#if defined(__gfx942__)
         const uint64_t a[2] = { 0x3faaaaaa3faaaaaaull, 0x3f5555553f555555ull };
         const uint64_t b[2] = { 0x60aaaaaa60aaaaaaull, 0x21357BDA21357BDAull };
         const uint64_t c[2] = { 0x41247C1141247C11ull, 0x429334F6429334F6ull };
