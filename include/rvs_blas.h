@@ -53,7 +53,7 @@ typedef void (*rvsBlasCallback_t) (bool status, void *userData);
 class rvs_blas {
  public:
    rvs_blas(int _gpu_device_index, int _m, int _n, int _k, std::string _matrix_init,
-       int transa, int transb, float aplha, float beta,
+       int transa, int transb, float alpha, float beta,
        rocblas_int lda, rocblas_int ldb, rocblas_int ldc, rocblas_int ldd,
        std::string _ops_type, std::string _data_type);
     rvs_blas() = delete;

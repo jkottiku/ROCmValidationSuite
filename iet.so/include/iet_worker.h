@@ -130,17 +130,22 @@ class IETWorker : public rvs::ThreadBase {
     //! returns the target power level for the test
     float get_target_power(void) { return target_power; }
 
-    //! sets the SGEMM matrix size
+    //! sets the matrix size
     void set_matrix_size(uint64_t _matrix_size) {
         matrix_size = _matrix_size;
     }
-    //! returns the SGEMM matrix size
+    //! returns the matrix size
     uint64_t get_matrix_size(void) { return matrix_size; }
 
-    //! sets the EDPp power tolerance
+    //! sets gemm operation type
     void set_iet_ops_type(std::string ops_type) { iet_ops_type = ops_type; }
-    //! returns the EDPp power tolerance
+    //! get gemm operation type
     std::string get_ops_type(void) { return iet_ops_type; }
+
+    //! sets gemm data type
+    void set_iet_data_type(std::string data_type) { iet_data_type = data_type; }
+    //! get gemm data type
+    std::string get_data_type(void) { return iet_data_type; }
 
     //! sets the EDPp power tolerance
     void set_tp_flag(bool _tp_flag) { iet_tp_flag = _tp_flag; }
@@ -224,6 +229,18 @@ class IETWorker : public rvs::ThreadBase {
     //! returns compute workload status
     bool get_cp_workload(void) { return iet_cp_workload; }
 
+   //! sets hot calls
+    void set_hot_calls(uint64_t _hot_calls) { iet_hot_calls = _hot_calls; }
+
+    //! returns hot calls
+    uint64_t get_iet_hot_calls(void) { return iet_hot_calls; }
+
+    //! sets the matrix init
+    void set_matrix_init(std::string _matrix_init) { matrix_init = _matrix_init; }
+
+    //! returns matrix init
+    std::string get_matrix_init(void) { return matrix_init; }
+
     //! BLAS callback
     static void blas_callback (bool status, void *user_data);
 
@@ -236,7 +253,7 @@ class IETWorker : public rvs::ThreadBase {
     void log_interval_gflops(double gflops_interval);
     void log_to_json(const std::string &key, const std::string &value,
         int log_level);
-    void blasThread(int gpuIdx,  uint64_t matrix_size, std::string  iet_ops_type,
+    void blasThread(int gpuIdx,  uint64_t matrix_size, std::string iet_ops_type, std::string iet_data_type,
         bool start, uint64_t run_duration_ms, int transa, int transb, float alpha, float beta,
         int iet_lda_offset, int iet_ldb_offset, int iet_ldc_offset, int iet_ldd_offset);
     void bandwidthThread(int gpuIdx, uint64_t run_duration_ms);
@@ -280,8 +297,10 @@ class IETWorker : public rvs::ThreadBase {
     //! TRUE if JSON output is required
     static bool bjson;
     bool sgemm_success;
-    //! blas_worker pointer
-    std::string  iet_ops_type;
+    //! gemm operation type
+    std::string iet_ops_type;
+    //! gemm data type
+    std::string iet_data_type;
 
     //! actual training time
     uint64_t training_time_ms;
@@ -316,6 +335,10 @@ class IETWorker : public rvs::ThreadBase {
     bool iet_bw_workload;
     //! Bandwidth compute enable/disable
     bool iet_cp_workload;
+    //! hot calls
+    uint64_t iet_hot_calls;
+    //! matrix init
+    std::string matrix_init;
 
     bool endtest = false;
     //! GEMM operations synchronization mutex

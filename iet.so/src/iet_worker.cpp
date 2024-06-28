@@ -114,8 +114,6 @@ IETWorker::IETWorker():endtest(false) {
 IETWorker::~IETWorker() {
 }
 
-
-
 /**
  * @brief logs the Gflops computed over the last log_interval period
  * @param gflops_interval the Gflops that the GPU achieved
@@ -129,30 +127,30 @@ void IETWorker::log_interval_gflops(double gflops_interval) {
 
 }
 
-void IETWorker::blasThread(int gpuIdx,  uint64_t matrix_size, std::string  iet_ops_type, 
-    bool start, uint64_t run_duration_ms, int transa, int transb, float alpha, float beta,
-    int iet_lda_offset, int iet_ldb_offset, int iet_ldc_offset, int iet_ldd_offset) {
+void IETWorker::blasThread(int gpuIdx, uint64_t matrix_size, std::string iet_ops_type,
+    std::string iet_data_type, bool start, uint64_t run_duration_ms, int transa, int transb,
+    float alpha, float beta, int iet_lda_offset, int iet_ldb_offset, int iet_ldc_offset, int iet_ldd_offset) {
 
     std::chrono::time_point<std::chrono::system_clock> iet_start_time, iet_end_time;
     double timetakenforoneiteration;
     double gflops_interval;
     double duration;
-    uint64_t gem_ops;
     std::unique_ptr<rvs_blas> gpu_blas;
     rvs_blas *free_gpublas;
     string msg;
+    std::string gemm_type = iet_ops_type.empty() ? iet_data_type : iet_ops_type;
 
     duration = 0;
-    gem_ops = 0;
+
     // setup rvsBlas
-    gpu_blas = std::unique_ptr<rvs_blas>(new rvs_blas(gpuIdx,  matrix_size,  matrix_size,  matrix_size, "default", transa, transb, alpha, beta,
-          iet_lda_offset, iet_ldb_offset, iet_ldc_offset, iet_ldd_offset, iet_ops_type, ""));
+    gpu_blas = std::unique_ptr<rvs_blas>(new rvs_blas(gpuIdx, matrix_size, matrix_size, matrix_size, matrix_init, transa, transb, alpha, beta,
+          iet_lda_offset, iet_ldb_offset, iet_ldc_offset, iet_ldd_offset, iet_ops_type, iet_data_type));
 
     //Genreate random matrix data
     gpu_blas->generate_random_matrix_data();
 
     //Copy data to GPU
-    gpu_blas->copy_data_to_gpu(iet_ops_type);
+    gpu_blas->copy_data_to_gpu(gemm_type);
 
     iet_start_time = std::chrono::system_clock::now();
 
@@ -160,7 +158,7 @@ void IETWorker::blasThread(int gpuIdx,  uint64_t matrix_size, std::string  iet_o
     while ((duration < run_duration_ms) && (endtest == false)) {
 
         //call the gemm blas
-        gpu_blas->run_blass_gemm(iet_ops_type);
+        gpu_blas->run_blass_gemm(gemm_type);
 
         // Waits for GEMM operation to complete
         if(!gpu_blas->is_gemm_op_complete())
@@ -211,8 +209,9 @@ bool IETWorker::do_iet_power_stress(void) {
     if (iet_cp_workload) {
 
       // Start compute workload thread
-      compute_t = std::thread(&IETWorker::blasThread, this, gpu_device_index, matrix_size, iet_ops_type, start, run_duration_ms,
-          iet_trans_a, iet_trans_b, iet_alpha_val, iet_beta_val, iet_lda_offset, iet_ldb_offset, iet_ldc_offset, iet_ldd_offset);
+      compute_t = std::thread(&IETWorker::blasThread, this, gpu_device_index, matrix_size, iet_ops_type, iet_data_type, 
+          start, run_duration_ms, iet_trans_a, iet_trans_b, iet_alpha_val, iet_beta_val,
+          iet_lda_offset, iet_ldb_offset, iet_ldc_offset, iet_ldd_offset);
     }
 
     // Start bandwidth thread if bandwidth workload is enabled
