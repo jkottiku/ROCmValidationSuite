@@ -98,6 +98,9 @@ using std::fstream;
 #define IET_DEFAULT_TOLERANCE           0.1
 #define IET_DEFAULT_SAMPLE_INTERVAL     1000
 #define IET_DEFAULT_MATRIX_SIZE         5760
+#define IET_DEFAULT_MATRIX_SIZE_A       0
+#define IET_DEFAULT_MATRIX_SIZE_B       0
+#define IET_DEFAULT_MATRIX_SIZE_C       0
 #define RVS_DEFAULT_PARALLEL            false
 #define RVS_DEFAULT_DURATION            500
 #define IET_DEFAULT_OPS_TYPE            ""
@@ -228,7 +231,7 @@ bool iet_action::get_all_iet_config_keys(void) {
       bsts = false;
     }
 
-    error = property_get_int<uint64_t>(RVS_CONF_MATRIX_SIZE_KEYA, &iet_matrix_size_a, IET_DEFAULT_MATRIX_SIZE);
+    error = property_get_int<uint64_t>(RVS_CONF_MATRIX_SIZE_KEYA, &iet_matrix_size_a, IET_DEFAULT_MATRIX_SIZE_A);
     if (error == 1) {
         msg = "invalid '" +
         std::string(RVS_CONF_MATRIX_SIZE_KEYA) + "' key value";
@@ -236,7 +239,7 @@ bool iet_action::get_all_iet_config_keys(void) {
         bsts = false;
     }
 
-    error = property_get_int<uint64_t>(RVS_CONF_MATRIX_SIZE_KEYB, &iet_matrix_size_b, IET_DEFAULT_MATRIX_SIZE);
+    error = property_get_int<uint64_t>(RVS_CONF_MATRIX_SIZE_KEYB, &iet_matrix_size_b, IET_DEFAULT_MATRIX_SIZE_B);
     if (error == 1) {
         msg = "invalid '" +
         std::string(RVS_CONF_MATRIX_SIZE_KEYB) + "' key value";
@@ -244,7 +247,7 @@ bool iet_action::get_all_iet_config_keys(void) {
         bsts = false;
     }
 
-    error = property_get_int<uint64_t>(RVS_CONF_MATRIX_SIZE_KEYC, &iet_matrix_size_c, IET_DEFAULT_MATRIX_SIZE);
+    error = property_get_int<uint64_t>(RVS_CONF_MATRIX_SIZE_KEYC, &iet_matrix_size_c, IET_DEFAULT_MATRIX_SIZE_C);
     if (error == 1) {
         msg = "invalid '" +
         std::string(RVS_CONF_MATRIX_SIZE_KEYC) + "' key value";

@@ -162,13 +162,14 @@ class IETWorker : public rvs::ThreadBase {
 
     //! returns the JSON flag
     static bool get_use_json(void) { return bjson; }
-    //! returns the SGEMM matrix size
+
+    //! returns the matrix size a
     uint64_t get_matrix_size_a(void) { return matrix_size_a; }
 
-    //! returns the SGEMM matrix size
+    //! returns the matrix size b
     uint64_t get_matrix_size_b(void) { return matrix_size_b; }
 
-    //! returns the SGEMM matrix size
+    //! returns the matrix size c
     uint64_t get_matrix_size_c(void) { return matrix_size_b; }
 
     //! sets the transpose matrix a
@@ -204,15 +205,15 @@ class IETWorker : public rvs::ThreadBase {
     void set_ldd_offset(int ldd) {
         iet_ldd_offset = ldd;
     }
-   //! sets the SGEMM matrix size
+   //! sets the matrix size a
     void set_matrix_size_a(uint64_t _matrix_size_a) {
         matrix_size_a = _matrix_size_a;
     }
-   //! sets the SGEMM matrix size
+   //! sets the matrix size b
     void set_matrix_size_b(uint64_t _matrix_size_b) {
         matrix_size_b = _matrix_size_b;
     }
-   //! sets the SGEMM matrix size
+   //! sets the matrix size c
     void set_matrix_size_c(uint64_t _matrix_size_c) {
         matrix_size_c = _matrix_size_c;
     }
@@ -253,10 +254,9 @@ class IETWorker : public rvs::ThreadBase {
     void log_interval_gflops(double gflops_interval);
     void log_to_json(const std::string &key, const std::string &value,
         int log_level);
-    void blasThread(int gpuIdx,  uint64_t matrix_size, std::string iet_ops_type, std::string iet_data_type,
-        bool start, uint64_t run_duration_ms, int transa, int transb, float alpha, float beta,
-        int iet_lda_offset, int iet_ldb_offset, int iet_ldc_offset, int iet_ldd_offset);
-    void bandwidthThread(int gpuIdx, uint64_t run_duration_ms);
+
+    void computeThread(void);
+    void bandwidthThread(void);
  protected:
     std::unique_ptr<rvs_blas> gpu_blas;
 
@@ -292,7 +292,7 @@ class IETWorker : public rvs::ThreadBase {
     //! power tolerance (how much the target_power can fluctuare after
     //! the ramp period for the test to succeed)
     float tolerance;
-    //! SGEMM matrix size
+    //! matrix size
     uint64_t matrix_size;
     //! TRUE if JSON output is required
     static bool bjson;
@@ -312,24 +312,24 @@ class IETWorker : public rvs::ThreadBase {
     float avg_power_training;
     //! the SGEMM delay which gives the actual GPU SGEMM frequency
     float sgemm_si_delay;
-   //! SGEMM matrix size
+   //! matrix sizes
     uint64_t matrix_size_a;
     uint64_t matrix_size_b;
     uint64_t matrix_size_c;
-    //leading offsets
+    //! leading offsets
     int iet_lda_offset;
     int iet_ldb_offset;
     int iet_ldc_offset;
     int iet_ldd_offset;
-    //Matrix transpose A
+    //! Matrix transpose A
     int iet_trans_a;
-    //Matrix transpose B
+    //! Matrix transpose B
     int iet_trans_b;
-    //IET aplha value
+    //! IET aplha value
     float iet_alpha_val;
-    //IET beta value
+    //! IET beta value
     float iet_beta_val;
-    //IET TP flag
+    //! IET TP flag
     bool iet_tp_flag;
     //! Bandwidth workload enable/disable
     bool iet_bw_workload;

@@ -109,6 +109,22 @@ rvs_blas::rvs_blas(int _gpu_device_index, int _m, int _n, int _k, std::string _m
   , check_count(1)
 {
 
+  std::cout << "_gpu_device_index -> "<< _gpu_device_index << std::endl;
+  std::cout << "_m -> "<< _m << std::endl;
+  std::cout << "_n -> "<< _n << std::endl;
+  std::cout << "_k -> "<< _k << std::endl;
+  std::cout << "_matrix_init -> "<< _matrix_init << std::endl;
+  std::cout << "transA -> "<< transA << std::endl;
+  std::cout << "transB -> "<< transB << std::endl;
+  std::cout << "alpha-> " << alpha << std::endl;
+  std::cout << "beta -> "<< beta << std::endl;
+  std::cout << "lda -> "<< lda << std::endl;
+  std::cout << "ldb -> "<< ldb << std::endl;
+  std::cout << "ldc -> "<< ldc << std::endl;
+  std::cout << "ldd -> "<< ldd << std::endl;
+  std::cout << "_ops_type -> "<< _ops_type << std::endl;
+  std::cout << "data_type -> "<< data_type << std::endl;
+
   if(transA == 0) {
     transa = rocblas_operation_none;
   }else{
@@ -218,7 +234,7 @@ bool rvs_blas::init_gpu_device(void) {
  * @brief copy data matrix from host to gpu
  * @return true if everything went fine, otherwise false
  */
-bool rvs_blas::copy_data_to_gpu(std::string ops_type) {
+bool rvs_blas::copy_data_to_gpu(void) {
 
   if(ops_type == "sgemm") {
 
@@ -636,7 +652,7 @@ bool rvs_blas::is_gemm_op_complete(void) {
  * @brief performs the GEMM matrix multiplication operations
  * @return true if GPU was able to enqueue the GEMM operation, otherwise false
  */
-bool rvs_blas::run_blass_gemm(std::string ops_type) {
+bool rvs_blas::run_blas_gemm(void) {
 
   if (!is_error) {
 
